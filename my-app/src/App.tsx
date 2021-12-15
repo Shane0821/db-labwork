@@ -87,9 +87,26 @@ function App() {
       </Sider>
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <Header className="site-layout-background" style={{ padding: 0 }} />
-        <Content style={{ margin: '24px 16px 0', overflow: 'initial'}}>
+        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div className="site-layout-background" style={{ padding: 24, textAlign: 'center', minHeight: '80vh' }}>
-            content
+            
+            {/*
+              <form action="/users/new" method="POST">
+              <input type="text" name="name" placeholder="Nama" />
+              <label>Gender:</label>
+              <label htmlFor="male1">
+                <input id="male1" type="checkbox" name="gender" value="male" />
+                Male
+              </label>
+              <label htmlFor="female1">
+                <input id="female1" type="checkbox" name="gender" value="female" />
+                Female
+              </label>
+              <button type="submit">Add</button>
+            </form>
+
+            */}
+            
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>DB Lab ©2021 Created by Shane</Footer>
