@@ -18,7 +18,11 @@ db.connect(function (err) {
         console.error('Error connecting: ' + err.stack);
         return;
     }
+    console.log("Successfully connected to the database.");
 });
+
+var initdb = require('./db.init');
+initdb.createTable();
 
 // make server object that contain port property and the value for our server.
 var server = {
@@ -27,18 +31,22 @@ var server = {
 
 //routers
 const usersRouter = require('./routes/users');
+const employeesRouter = require('./routes/employees');
+
 // use the modules
 app.use(cors())
 app.use(bodyParser.json());
-app.use(express.json())
-app.use(express.urlencoded({ extended: true })) // parsing incoming requests with urlencoded based body-parser
+app.use(express.json())  // parse requests of content-type - application/json
+app.use(express.urlencoded({ extended: true }))  // parse requests of content-type - application/x-www-form-urlencoded
 
 //use router
 app.use('/users', usersRouter); // 到/users的路由
+app.use('/employees', employeesRouter); // 到/users的路由
 
 // starting the server
 app.listen(server.port, () => console.log(`Server started, listening port: ${server.port}`));
 
 app.get('/', function (req, res) {
-    res.sendFile(path.resolve(__dirname, '') + '/input.html');
+    console.log("Welcome!");
+    res.json({ message: "Welcome to bezkoder application." });
 });
