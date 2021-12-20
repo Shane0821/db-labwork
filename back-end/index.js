@@ -10,7 +10,7 @@ db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '123',
-    database: 'labworkdb'
+    database: 'test'
 })
 
 db.connect(function (err) {
