@@ -32,14 +32,6 @@ import {
   PlusOutlined
 } from '@ant-design/icons';
 
-import { Basement, Container } from './components/BasicHTMLElement'
-import { Router } from 'react-router';
-import { waitFor } from '@testing-library/react';
-
-const { Text, Title, Paragraph } = Typography;
-
-const { Search } = Input;
-const { SubMenu } = Menu;
 const { Header, Content, Sider, Footer } = Layout;
 
 /*const data = [
@@ -73,85 +65,14 @@ function App() {
     return '5';
   });
 
-  const [employeeData, setEmployeeData] = useState([]);
-  const [departmentData, setDepartmentData] = useState([]);
-  const [addVisible, setAddVisible] = useState(false);
-
-  const showAddDrawer = () => {
-    setAddVisible(true);
-  }
-
   const onSelectMenu = (e: any) => {
     setSelectedMenu(e.key);
   }
-
-  const GetEmployees = async () => {
-    const res = await staticApi.get('/employee', {})
-    console.log("source:", res);
-    if (res.data.success) {
-      setEmployeeData(res.data.data);
-    } else {
-      message.error(res.data.reason)
-    }
-  }
-
-  const GetDepartments = async () => {
-    const res = await staticApi.get('/department', {})
-    console.log("source:", res);
-    if (res.data.success) {
-      setDepartmentData(res.data.data);
-    } else {
-      message.error(res.data.message)
-    }
-  }
-
-  const GetProjects = async () => {
-
-  }
-
-  const GetBoard = async () => {
-
-  }
-
-  const getURL = () => {
-    if (selectedMenu == '1') return '/department/search';
-    else if (selectedMenu == '2') return '/employee/search';
-    else if (selectedMenu == '3') return '/project/search';
-    return '/department/search';
-  }
-
-  const onSearch = async (e: string) => {
-    console.log(e);
-    var myurl = getURL();
-    const res = await staticApi.get(myurl, {
-      params: {
-        searchitem: e
-      }
-    })
-    console.log("source:", res);
-    if (res.data.success) {
-      if (selectedMenu == '1')
-        setDepartmentData(res.data.data);
-      else if (selectedMenu == '2')
-        setEmployeeData(res.data.data);
-    } else {
-      message.error(res.data.reason)
-    }
-  }
-
+ 
   useEffect(
     () => {
-      console.log(employeeData);
-      if (selectedMenu == "1") {
-        GetDepartments();
-      } else if (selectedMenu == "2") {
-        GetEmployees();
-      } else if (selectedMenu == "3") {
-        GetProjects();
-      } else if (selectedMenu == "4") {
-        GetBoard();
-      }
-    }, [selectedMenu]
+      
+    }, []
   )
 
   return (
@@ -191,40 +112,12 @@ function App() {
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <Header className="site-layout-background" style={{ padding: 0 }} />
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-          <div className="site-layout-background" style={{ paddingLeft: 24, paddingTop: 24, display: 'flex' }} hidden={selectedMenu == '5' || selectedMenu == '4'}>
-            <Search
-              placeholder="input search text"
-              allowClear={true}
-              enterButton="Search"
-              size="large"
-              onSearch={onSearch}
-              style={{ width: '25%' }}
-            />
-
-            <Button type="primary" size="large" style={{ marginLeft: 24, display: 'flex', alignItems: 'center' }} onClick={showAddDrawer}>
-              <PlusOutlined></PlusOutlined>新增
-            </Button>
-            <Drawer
-              title={
-                selectedMenu == '1' ? `添加部门` :
-                  selectedMenu == '2' ? `添加员工` : '添加项目'
-              }
-              placement="right"
-              size='default'
-              visible={addVisible}
-              onClose={() => { setAddVisible(false); }}
-            >
-              
-
-
-            </Drawer>
-          </div>
           <div className="site-layout-background" style={{ padding: 24, textAlign: 'center', minHeight: '80vh' }}>
 
             <Routes>
               <Route path="/" element={<img src="./images/home.jpg" width="100%"></img>}></Route>
-              <Route path="/employee" element={<EmployeeTable data={employeeData}></EmployeeTable>}></Route>
-              <Route path="/department" element={<DepartmentTable data={departmentData}></DepartmentTable>}></Route>
+              <Route path="/employee" element={<EmployeeTable></EmployeeTable>}></Route>
+              <Route path="/department" element={<DepartmentTable></DepartmentTable>}></Route>
             </Routes>
           </div>
         </Content>

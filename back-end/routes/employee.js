@@ -5,14 +5,16 @@ router.get('/', function (req, res) {
     let sql = `
     SELECT eno, ename, gender, age, employee.dno, dname 
     FROM employee, department 
-    where employee.dno=department.dno`;
+    where employee.dno=department.dno
+    order by eno asc
+    `;
     db.query(sql, function (err, data, fields) {
         if (err) {
             console.log(err);
             res.json({
                 status: 400,
                 success: false,
-                message: "falied to retrieve employee list "
+                message: err.sqlMessage
             })
         } else {
             res.json({
@@ -39,6 +41,7 @@ router.get('/search', function (req, res) {
         or gender REGEXP '${flt}' 
         or dname REGEXP '${flt}') 
         and employee.dno=department.dno
+    order by eno asc
     `;
     db.query(sql, function (err, data, fields) {
         if (err) {
@@ -46,7 +49,7 @@ router.get('/search', function (req, res) {
             res.json({
                 status: 400,
                 success: false,
-                message: "falied to retrieve employee list"
+                message: err.sqlMessage
             })
         } else {
             res.json({
@@ -58,6 +61,56 @@ router.get('/search', function (req, res) {
             console.log(data);
         }
 
+    })
+});
+
+
+router.post('/new', function (req, res) {
+    let sql = `insert into employee values (?)`;
+    let values = [
+        req.body.params.eno,
+        req.body.params.ename,
+        req.body.params.gender,
+        req.body.params.age,
+        req.body.params.dno,
+    ]
+    db.query(sql, [values], function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                success: true,
+                message: "new employee added successfully"
+            })
+        }
+    })
+});
+
+
+router.delete('/delete', function (req, res) {
+    console.log(req.query);
+    let sql = `delete from employee where eno='${req.query.eno}'`;
+    db.query(sql, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                success: true,
+                message: "employee deleted successfully"
+            })
+        }
     })
 });
 
