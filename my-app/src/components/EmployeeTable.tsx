@@ -56,7 +56,7 @@ export const EmployeeTable = (props: {}) => {
     }
 
     const deleteElement = async (text: any, record: any, index: any) => {
-       console.log(record.eno);
+        console.log(record.eno);
         const res = await staticApi.delete('/employee/delete', {
             params: {
                 eno: record.eno
@@ -89,10 +89,11 @@ export const EmployeeTable = (props: {}) => {
     const handleSubmit = async (values: any) => {
         console.log(values);
         const checkReg = /\s+/;
-        if (values.username && values.username.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.nickname && values.nickname.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.email && values.email.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.phone_number && values.phone_number.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        if (values.ename === '' || values.ename && values.ename.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.eno === '' || values.eno && values.eno.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.dno === '' || values.dno && values.dno.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.age === '' || values.age && values.age.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.phone === '' || values.phone && values.phone.search(checkReg) !== -1) message.error('请不要使用空白字符');
         else {
             const res = await staticApi.post('/employee/new', {
                 params: {
@@ -100,12 +101,14 @@ export const EmployeeTable = (props: {}) => {
                     ename: values.ename,
                     gender: values.gender,
                     age: values.age,
+                    phone: values.phone,
                     dno: values.dno
                 }
             });
             console.log(res);
             if (res.data.success) {
                 message.success('提交成功')
+                dataForm.resetFields();
                 setAddVisible(false);
             } else {
                 message.warning(res.data.message)
@@ -159,6 +162,9 @@ export const EmployeeTable = (props: {}) => {
                         <Form.Item wrapperCol={{ span: 10 }} name="age" label="年龄">
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
+                        <Form.Item wrapperCol={{ span: 10 }} name="phone" label="联系电话">
+                            <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        </Form.Item>
                         <Form.Item wrapperCol={{ span: 10 }} name="dno" label="部门号" >
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
@@ -175,6 +181,7 @@ export const EmployeeTable = (props: {}) => {
                 <Column title="年龄" dataIndex="age" key="age" />
                 <Column title="部门号" dataIndex="dno" key="dno" />
                 <Column title="部门名称" dataIndex="dname" key="dname" />
+                <Column title="联系电话" dataIndex="phone" key="phone" />
                 <Column
                     title="操作"
                     key="action"

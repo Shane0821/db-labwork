@@ -1,8 +1,7 @@
 const express = require('express');
 
 const createTable = () => {
-
-    var sql = "CREATE TABLE if not exists employee (eno INT PRIMARY KEY, ename VARCHAR(50) NOT NULL, gender VARCHAR(50) NOT NULL, age INT NOT NULL, dno INT NOT NULL)";
+    var sql = "CREATE TABLE if not exists employee (eno INT PRIMARY KEY, ename VARCHAR(50) NOT NULL, gender VARCHAR(50) NOT NULL, age INT NOT NULL, phone VARCHAR(20) NOT NULL, dno INT NOT NULL)";
     db.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Employee Table created");
@@ -23,6 +22,26 @@ const createTable = () => {
         console.log("Contribution Table created");
     });
     var sql = "ALTER TABLE employee ADD CONSTRAINT fk_dno FOREIGN KEY(dno) REFERENCES department(dno) ON DELETE CASCADE";
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
+    var sql = "insert into department values(205,'人事部', '2楼401室',NULL)";
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
+    var sql = "insert into department values(206,'技术部', '1楼111室',NULL)";
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
+    var sql = "insert into employee values(1,'张三', '男',30,13291349099,205)";
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
+    var sql = "insert into employee values(2,'李四', '男',28,11111111111,206)";
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
+    var sql = "insert into employee values(3,'王二', '男',26,18093170888,206)";
     db.query(sql, function (err, result) {
         // if (err) console.log(err);
     });

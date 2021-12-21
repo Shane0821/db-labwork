@@ -34,19 +34,6 @@ import {
 
 const { Header, Content, Sider, Footer } = Layout;
 
-/*const data = [
-  {
-    eno: 1,
-    ename: "张三",
-    gender: "男",
-    age: 30,
-    dno: 203,
-    dname: "人事部"
-  }
-];*/
-
-
-
 function App() {
   const [selectedMenu, setSelectedMenu] = useState(() => {
     const urlParams = new URL(window.location.href);

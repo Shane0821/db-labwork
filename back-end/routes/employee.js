@@ -3,7 +3,7 @@ const express = require('express'),
 
 router.get('/', function (req, res) {
     let sql = `
-    SELECT eno, ename, gender, age, employee.dno, dname 
+    SELECT eno, ename, gender, age, phone, employee.dno, dname 
     FROM employee, department 
     where employee.dno=department.dno
     order by eno asc
@@ -34,7 +34,7 @@ router.get('/search', function (req, res) {
     flt = flt.concat(req.query.searchitem);
     // console.log(flt);
     let sql = `
-    SELECT eno, ename, gender, age, employee.dno, dname 
+    SELECT eno, ename, gender, age, phone, employee.dno, dname 
     FROM employee, department 
     where (eno REGEXP '${flt}' 
         or ename REGEXP '${flt}' 
@@ -72,6 +72,7 @@ router.post('/new', function (req, res) {
         req.body.params.ename,
         req.body.params.gender,
         req.body.params.age,
+        req.body.params.phone,
         req.body.params.dno,
     ]
     db.query(sql, [values], function (err, data, fields) {
