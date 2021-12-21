@@ -1,15 +1,15 @@
 const express = require('express'),
     router = express.Router();
 
-// get user lists
 router.get('/', function (req, res) {
-    let sql = `SELECT * FROM employees`;
+    let sql = `SELECT department.dno, dname, address, bossno, ename FROM department LEFT JOIN employee ON department.bossno = employee.eno`;
     db.query(sql, function (err, data, fields) {
         if (err) throw err;
         res.json({
             status: 200,
             data,
-            message: "employees lists retrieved successfully"
+            success: true,
+            message: "department list retrieved successfully"
         })
         console.log(data);
     })

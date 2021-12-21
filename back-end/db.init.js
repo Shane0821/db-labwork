@@ -12,7 +12,7 @@ const createTable = () => {
         if (err) throw err;
         console.log("Department Table created");
     });
-    var sql = "CREATE TABLE if not exists project (pno INT PRIMARY KEY, stime datetime NOT NULL, ftime datetime NOT NULL, leaderno INT NOT NULL, FOREIGN KEY(leaderno) REFERENCES employee(eno))";
+    var sql = "CREATE TABLE if not exists project (pno INT PRIMARY KEY, dsc VARCHAR(200) DEFAULT '还没有添加描述', stime DATE NOT NULL, ftime DATE NOT NULL, leaderno INT NOT NULL, FOREIGN KEY(leaderno) REFERENCES employee(eno))";
     db.query(sql, function (err, result) {
         if (err) throw err;
         console.log("Project Table created");

@@ -3,7 +3,7 @@ const express = require('express'),
 
 // get user lists
 router.get('/list', function (req, res) {
-    let sql = `SELECT * FROM users`;
+    let sql = `SELECT * FROM employee`;
     db.query(sql, function (err, data, fields) {
         if (err) throw err;
         res.json({
