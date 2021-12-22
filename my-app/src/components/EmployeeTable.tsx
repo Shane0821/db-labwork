@@ -5,7 +5,7 @@ import { EmployeeModel } from '../utils/DataModel';
 import {
     Layout, Menu, Breadcrumb, Avatar, Card, Divider, Input,
     message, Pagination, Select, Skeleton, Typography, Upload, Tooltip,
-    Col, Row, Descriptions, Form, Radio, Drawer
+    Col, Row, Descriptions, Form, Radio, Drawer, Popconfirm
 } from 'antd'
 import { staticApi } from '../utils/http-common';
 import { Basement, Container } from './BasicHTMLElement'
@@ -27,7 +27,8 @@ import {
     AppstoreOutlined,
     TeamOutlined,
     ShopOutlined,
-    PlusOutlined
+    PlusOutlined,
+    QuestionCircleOutlined
 } from '@ant-design/icons';
 
 const { Text, Title, Paragraph } = Typography;
@@ -37,12 +38,14 @@ const { SubMenu } = Menu;
 const { Column, ColumnGroup } = Table;
 
 export const EmployeeTable = (props: {}) => {
-    const [data, setData] = useState([]);
-    const [addVisible, setAddVisible] = useState(false);
+    const [data, setData] = useState<Array<EmployeeModel>>([]);
+    const [visible, setVisible] = useState(false);
     const [dataForm] = Form.useForm();
+    const [opt, setOpt] = useState(0);
 
-    const showAddDrawer = () => {
-        setAddVisible(true);
+
+    const showDrawer = () => {
+        setVisible(true);
     }
 
     const getData = async () => {
@@ -86,32 +89,39 @@ export const EmployeeTable = (props: {}) => {
         }
     }
 
-    const handleSubmit = async (values: any) => {
+    const handleSubmit = async (values: EmployeeModel) => {
         console.log(values);
         const checkReg = /\s+/;
-        if (values.ename === '' || values.ename && values.ename.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.eno === '' || values.eno && values.eno.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.dno === '' || values.dno && values.dno.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.age === '' || values.age && values.age.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.phone === '' || values.phone && values.phone.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        if (values.ename !== undefined && (values.ename === '' || values.ename.search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.eno !== undefined && (values.eno.toString() === '' || values.eno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.dno !== undefined && (values.dno.toString() === '' || values.dno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.age !== undefined && (values.age.toString() === '' || values.age.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.phone !== undefined && (values.phone === '' || values.phone.search(checkReg) !== -1)) message.error('请不要使用空白字符');
         else {
-            const res = await staticApi.post('/employee/new', {
-                params: {
-                    eno: values.eno,
-                    ename: values.ename,
-                    gender: values.gender,
-                    age: values.age,
-                    phone: values.phone,
-                    dno: values.dno
+            if (opt == 0) {
+                const res = await staticApi.post('/employee/new', {
+                    params: {
+                        eno: values.eno,
+                        ename: values.ename,
+                        gender: values.gender,
+                        age: values.age,
+                        phone: values.phone,
+                        dno: values.dno
+                    }
+                });
+                console.log(res);
+                if (res.data.success) {
+                    message.success('提交成功')
+                    dataForm.resetFields();
+                    setVisible(false);
+                    getData();
+                } else {
+                    message.warning(res.data.message)
                 }
-            });
-            console.log(res);
-            if (res.data.success) {
-                message.success('提交成功')
-                dataForm.resetFields();
-                setAddVisible(false);
             } else {
-                message.warning(res.data.message)
+
+
+
             }
         }
     }
@@ -120,7 +130,7 @@ export const EmployeeTable = (props: {}) => {
     useEffect(
         () => {
             getData();
-        }, [, addVisible]
+        }, []
     )
 
     return (
@@ -135,17 +145,22 @@ export const EmployeeTable = (props: {}) => {
                     style={{ width: '25%' }}
                 />
 
-                <Button type="primary" size="large" style={{ marginLeft: 24, display: 'flex', alignItems: 'center' }} onClick={showAddDrawer}>
+                <Button type="primary" size="large"
+                    style={{ marginLeft: 24, display: 'flex', alignItems: 'center' }}
+                    onClick={() => { showDrawer(); setOpt(0); }}
+                >
                     <PlusOutlined></PlusOutlined>新增
                 </Button>
                 <Drawer
                     title={`添加员工`}
                     placement="right"
                     size='default'
-                    visible={addVisible}
-                    onClose={() => { setAddVisible(false); }}
+                    visible={visible}
+                    onClose={() => {
+                        setVisible(false);
+                        if (opt === 1) dataForm.resetFields();
+                    }}
                 >
-
                     <Form labelCol={{ span: 8 }} onFinish={handleSubmit} form={dataForm}>
                         <Form.Item wrapperCol={{ span: 10 }} name="eno" label="员工编号" >
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
@@ -187,9 +202,20 @@ export const EmployeeTable = (props: {}) => {
                     key="action"
                     render={(text, record, index) => (
                         <Space>
-                            <Button>分配项目</Button>
-                            <Button type="primary">修改</Button>
-                            <Button type="dashed" onClick={() => deleteElement(text, record, index)}>删除</Button>
+                            <Button type="primary"
+                                onClick={() => { showDrawer(); dataForm.setFieldsValue(record); setOpt(1) }}
+                            >
+                                修改
+                            </Button>
+                            <Popconfirm onConfirm={() => { deleteElement(text, record, index) }}
+                                title="Are you sure?"
+                                icon={<QuestionCircleOutlined
+                                    style={{ color: 'red' }} />}
+                                okText={<a>确定</a>}
+                                cancelText={<a>取消</a>}
+                            >
+                                <Button type="dashed">删除</Button>
+                            </Popconfirm>,
                         </Space>
                     )}
                 />

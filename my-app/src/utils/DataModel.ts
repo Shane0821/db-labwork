@@ -3,6 +3,7 @@ export interface EmployeeModel {
     ename: string;
     gender: string;
     age: number;
+    phone: string;
     dno: number;
     dname: string;
 }
