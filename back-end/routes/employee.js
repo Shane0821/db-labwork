@@ -94,8 +94,38 @@ router.post('/new', function (req, res) {
 });
 
 
+router.post('/update', function (req, res) {
+    let sql = `UPDATE  employee SET ename=?, gender=?,age=?,phone=?, dno=? WHERE eno=?`;
+    let values = [
+        req.body.params.ename,
+        req.body.params.gender,
+        req.body.params.age,
+        req.body.params.phone,
+        req.body.params.dno,
+        req.body.params.eno,
+    ]
+    // console.log(values);
+    db.query(sql, values, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                success: true,
+                message: "employee info updated successfully"
+            })
+        }
+    })
+});
+
+
 router.delete('/delete', function (req, res) {
-    console.log(req.query);
+    // console.log(req.query);
     let sql = `delete from employee where eno='${req.query.eno}'`;
     db.query(sql, function (err, data, fields) {
         if (err) {

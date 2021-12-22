@@ -7,4 +7,12 @@ export interface EmployeeModel {
     dno: number;
     dname: string;
 }
-  
+
+
+export interface DepartmentModel {
+    dno: number;
+    dname: string;
+    address: string;
+    bossno: number;
+    ename: string;
+}

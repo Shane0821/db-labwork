@@ -119,9 +119,25 @@ export const EmployeeTable = (props: {}) => {
                     message.warning(res.data.message)
                 }
             } else {
-
-
-
+                const res = await staticApi.post('/employee/update', {
+                    params: {
+                        eno: values.eno,
+                        ename: values.ename,
+                        gender: values.gender,
+                        age: values.age,
+                        phone: values.phone,
+                        dno: values.dno
+                    }
+                });
+                console.log(res);
+                if (res.data.success) {
+                    message.success('更新成功')
+                    dataForm.resetFields();
+                    setVisible(false);
+                    getData();
+                } else {
+                    message.warning(res.data.message)
+                }
             }
         }
     }
@@ -152,7 +168,7 @@ export const EmployeeTable = (props: {}) => {
                     <PlusOutlined></PlusOutlined>新增
                 </Button>
                 <Drawer
-                    title={`添加员工`}
+                    title={opt===1 ? `修改信息`:`添加员工`}
                     placement="right"
                     size='default'
                     visible={visible}
@@ -163,7 +179,7 @@ export const EmployeeTable = (props: {}) => {
                 >
                     <Form labelCol={{ span: 8 }} onFinish={handleSubmit} form={dataForm}>
                         <Form.Item wrapperCol={{ span: 10 }} name="eno" label="员工编号" >
-                            <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                            <Input disabled={opt===1} onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
                         <Form.Item wrapperCol={{ span: 10 }} name="ename" label="员工姓名" >
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
