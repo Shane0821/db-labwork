@@ -231,7 +231,7 @@ export const EmployeeTable = (props: {}) => {
                                 cancelText={<a>取消</a>}
                             >
                                 <Button type="dashed">删除</Button>
-                            </Popconfirm>,
+                            </Popconfirm>
                         </Space>
                     )}
                 />

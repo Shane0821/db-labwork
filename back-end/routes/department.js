@@ -113,7 +113,7 @@ router.post('/update', function (req, res) {
             res.json({
                 status: 200,
                 success: true,
-                message: "employee info updated successfully"
+                message: "department info updated successfully"
             })
         }
     })
@@ -121,7 +121,7 @@ router.post('/update', function (req, res) {
 
 
 router.delete('/delete', function (req, res) {
-    console.log(req.query);
+    //console.log(req.query);
     let sql = `delete from department where dno='${req.query.dno}'`;
     db.query(sql, function (err, data, fields) {
         if (err) {
@@ -135,7 +135,7 @@ router.delete('/delete', function (req, res) {
             res.json({
                 status: 200,
                 success: true,
-                message: "employee deleted successfully"
+                message: "department deleted successfully"
             })
         }
     })

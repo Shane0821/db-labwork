@@ -68,12 +68,12 @@ router.get('/search', function (req, res) {
 
 
 router.post('/new', function (req, res) {
-    let sql = `insert into department values(?,?,?,?)`;
+    let sql = `insert into project values(?,?,?,?,NULL)`;
     let values = [
-        req.body.params.dno,
-        req.body.params.dname,
-        req.body.params.address,
-        req.body.params.bossno === '' ? null : req.body.params.bossno,
+        req.body.params.pno,
+        req.body.params.dsc,
+        req.body.params.stime,
+        req.body.params.ftime
     ]
     db.query(sql, values, function (err, data, fields) {
         if (err) {
@@ -87,7 +87,7 @@ router.post('/new', function (req, res) {
             res.json({
                 status: 200,
                 success: true,
-                message: "new department added successfully"
+                message: "new project added successfully"
             })
         }
     })
@@ -96,14 +96,14 @@ router.post('/new', function (req, res) {
 
 router.post('/update', function (req, res) {
     let sql = `
-    UPDATE department
-    SET dname =?, address =?, bossno =? WHERE dno =?
+    UPDATE project
+    SET dsc =?, stime =?, ftime =? WHERE pno =?
         `;
     let values = [
-        req.body.params.dname,
-        req.body.params.address,
-        req.body.params.bossno === '' ? null : req.body.params.bossno,
-        req.body.params.dno,
+        req.body.params.dsc,
+        req.body.params.stime,
+        req.body.params.ftime,
+        req.body.params.pno,
     ]
     // console.log(values);
     db.query(sql, values, function (err, data, fields) {
@@ -118,7 +118,7 @@ router.post('/update', function (req, res) {
             res.json({
                 status: 200,
                 success: true,
-                message: "employee info updated successfully"
+                message: "project info updated successfully"
             })
         }
     })
@@ -126,8 +126,7 @@ router.post('/update', function (req, res) {
 
 
 router.delete('/delete', function (req, res) {
-    console.log(req.query);
-    let sql = `delete from department where dno = '${req.query.dno}'`;
+    let sql = `delete from project where pno = '${req.query.pno}'`;
     db.query(sql, function (err, data, fields) {
         if (err) {
             console.log(err);
@@ -140,7 +139,7 @@ router.delete('/delete', function (req, res) {
             res.json({
                 status: 200,
                 success: true,
-                message: "employee deleted successfully"
+                message: "project deleted successfully"
             })
         }
     })

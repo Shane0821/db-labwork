@@ -11,7 +11,7 @@ import { staticApi } from '../utils/http-common';
 import { Basement, Container } from './BasicHTMLElement'
 import { Router } from 'react-router';
 import { waitFor } from '@testing-library/react';
-import moment from "moment";
+import moment from 'moment';
 
 import {
     UserOutlined,
@@ -69,7 +69,7 @@ export const ProjectTable = (props: {}) => {
 
 
     const getEmployee = async (record: ProjectModel) => {
-        const res = await staticApi.get('/employee', {
+        const res = await staticApi.get('/employee/project', {
             params: {
                 pno: record.pno
             }
@@ -86,7 +86,7 @@ export const ProjectTable = (props: {}) => {
         // console.log(record.dno);
         const res = await staticApi.delete('/project/delete', {
             params: {
-                dno: record.dno
+                pno: record.pno
             }
         })
         // console.log("source:", res);
@@ -116,18 +116,16 @@ export const ProjectTable = (props: {}) => {
     const handleSubmit = async (values: ProjectModel) => {
         console.log(values);
         const checkReg = /\s+/;
-        /*
-        if (values.dname !== undefined && (values.dname === '' || values.dname.search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.dno !== undefined && (values.dno.toString() === '' || values.dno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.address !== undefined && (values.address.toString() === '' || values.address.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        if (values.pno !== undefined && values.pno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.stime > values.ftime) message.error('项目结束时间不可小于起始时间');
         else {
             if (opt == 0) {
                 const res = await staticApi.post('/project/new', {
                     params: {
-                        dno: values.dno,
-                        dname: values.dname,
-                        address: values.address,
-                        bossno: values.bossno
+                        pno: values.pno,
+                        dsc: values.dsc,
+                        stime: values.stime,
+                        ftime: values.ftime
                     }
                 });
                 // console.log(res);
@@ -142,10 +140,10 @@ export const ProjectTable = (props: {}) => {
             } else {
                 const res = await staticApi.post('/project/update', {
                     params: {
-                        dname: values.dname,
-                        address: values.address,
-                        dno: values.dno,
-                        bossno: values.bossno
+                        dsc: values.dsc,
+                        stime: values.stime,
+                        ftime: values.ftime,
+                        pno: values.pno
                     }
                 });
                 console.log(res);
@@ -158,7 +156,7 @@ export const ProjectTable = (props: {}) => {
                     message.warning(res.data.message)
                 }
             }
-        }*/
+        }
     }
 
 
@@ -195,20 +193,13 @@ export const ProjectTable = (props: {}) => {
                             <Input disabled={opt === 1} onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
                         <Form.Item wrapperCol={{ span: 15 }} name="dsc" label="项目简介" rules={[{ required: true, message: 'Please input Intro' }]}>
-                            <Input.TextArea showCount maxLength={200} size={"large"} rows={5}/>
+                            <Input.TextArea showCount maxLength={200} size={"large"} rows={5} />
                         </Form.Item>
                         <Form.Item wrapperCol={{ span: 10 }} name="stime" label="起始时间" rules={[{ required: true, message: 'Please input Info' }]}>
                             <DatePicker />
                         </Form.Item>
                         <Form.Item wrapperCol={{ span: 10 }} name="ftime" label="结束时间" rules={[{ required: true, message: 'Please input Info' }]}>
                             <DatePicker />
-                        </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="项目负责人" hidden={opt==0}>
-                            <Select placeholder="选择负责人">
-                                {employee.map((item) =>
-                                    <Select.Option value={item.eno}>{item.eno}{"  "}{item.ename}</Select.Option>
-                                )}
-                            </Select>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8 }}>
                             <Button type="primary" htmlType="submit">提交</Button>
@@ -218,7 +209,13 @@ export const ProjectTable = (props: {}) => {
             </div>
             <Table dataSource={data} pagination={false} bordered={true}>
                 <Column title="项目号" dataIndex="pno" key="pno" />
-                <Column title="项目简介" dataIndex="dsc" key="dsc" />
+                <Column title="项目简介" dataIndex="dsc" key="dsc" ellipsis={{ showTitle: false }}
+                    render={dsc => (
+                        <Tooltip placement="topLeft" title={dsc}>
+                            {dsc}
+                        </Tooltip>
+                    )}
+                />
                 <Column title="起始时间" dataIndex="stime" key="stime" />
                 <Column title="结束时间" dataIndex="ftime" key="ftime" />
                 <ColumnGroup title="项目负责人" >
@@ -232,7 +229,18 @@ export const ProjectTable = (props: {}) => {
                     render={(text, record: ProjectModel, index) => (
                         <Space>
                             <Button type="primary"
-                                onClick={() => { showDrawer(); dataForm.setFieldsValue(record); setOpt(1); getEmployee(record); }}
+                                onClick={() => {
+                                    showDrawer();
+                                    const tmp1 = record.stime;
+                                    const tmp2 = record.ftime;
+                                    Reflect.set(record, 'stime', moment.utc(record.stime, "YYYY-MM-DD"));
+                                    Reflect.set(record, 'ftime', moment.utc(record.ftime, "YYYY-MM-DD"));
+                                    setOpt(1);
+                                    dataForm.setFieldsValue(record);
+                                    Reflect.set(record, 'stime', tmp1);
+                                    Reflect.set(record, 'ftime', tmp2);
+                                    /* getEmployee(record); */
+                                }}
                             >
                                 修改
                             </Button>
@@ -244,7 +252,7 @@ export const ProjectTable = (props: {}) => {
                                 cancelText={<a>取消</a>}
                             >
                                 <Button type="dashed">删除</Button>
-                            </Popconfirm>,
+                            </Popconfirm>
                         </Space>
                     )}
                 />

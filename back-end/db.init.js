@@ -16,10 +16,10 @@ const createTable = () => {
         if (err) throw err;
         //console.log("Project Table created");
     });
-    var sql = "CREATE TABLE if not exists contribution (eno INT NOT NULL, pno INT NOT NULL, ctime DOUBLE DEFAULT 0, PRIMARY KEY(eno, pno), FOREIGN KEY(eno) REFERENCES employee(eno), FOREIGN KEY(pno) REFERENCES project(pno))";
+    var sql = "CREATE TABLE if not exists pro_emp (eno INT NOT NULL, pno INT NOT NULL, ctime DOUBLE DEFAULT 0, PRIMARY KEY(eno, pno), FOREIGN KEY(eno) REFERENCES employee(eno) ON DELETE CASCADE, FOREIGN KEY(pno) REFERENCES project(pno) ON DELETE CASCADE)";
     db.query(sql, function (err, result) {
         if (err) throw err;
-        //console.log("Contribution Table created");
+        //console.log("pro_emp Table created");
     });
     var sql = "ALTER TABLE employee ADD CONSTRAINT fk_dno FOREIGN KEY(dno) REFERENCES department(dno) ON DELETE CASCADE";
     db.query(sql, function (err, result) {
