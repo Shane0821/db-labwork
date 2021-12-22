@@ -92,11 +92,11 @@ export const EmployeeTable = (props: {}) => {
     const handleSubmit = async (values: EmployeeModel) => {
         console.log(values);
         const checkReg = /\s+/;
-        if (values.ename !== undefined && (values.ename === '' || values.ename.search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.eno !== undefined && (values.eno.toString() === '' || values.eno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.dno !== undefined && (values.dno.toString() === '' || values.dno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.age !== undefined && (values.age.toString() === '' || values.age.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
-        else if (values.phone !== undefined && (values.phone === '' || values.phone.search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        if (values.ename !== undefined && values.ename.search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.eno !== undefined && values.eno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.dno !== undefined && values.dno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.age !== undefined && values.age.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else if (values.phone !== undefined && values.phone.search(checkReg) !== -1) message.error('请不要使用空白字符');
         else {
             if (opt == 0) {
                 const res = await staticApi.post('/employee/new', {
@@ -168,7 +168,7 @@ export const EmployeeTable = (props: {}) => {
                     <PlusOutlined></PlusOutlined>新增
                 </Button>
                 <Drawer
-                    title={opt===1 ? `修改信息`:`添加员工`}
+                    title={opt === 1 ? `修改信息` : `添加员工`}
                     placement="right"
                     size='default'
                     visible={visible}
@@ -178,25 +178,25 @@ export const EmployeeTable = (props: {}) => {
                     }}
                 >
                     <Form labelCol={{ span: 8 }} onFinish={handleSubmit} form={dataForm}>
-                        <Form.Item wrapperCol={{ span: 10 }} name="eno" label="员工编号" >
-                            <Input disabled={opt===1} onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        <Form.Item wrapperCol={{ span: 10 }} name="eno" label="员工编号" rules={[{ required: true, message: 'Please input Info' }]}>
+                            <Input disabled={opt === 1} onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="ename" label="员工姓名" >
+                        <Form.Item wrapperCol={{ span: 10 }} name="ename" label="员工姓名" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 20 }} name="gender" label="性别" >
+                        <Form.Item wrapperCol={{ span: 20 }} name="gender" label="性别" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Radio.Group>
                                 <Radio.Button value={"男"} style={{ width: '64px', textAlign: 'center' }}>男</Radio.Button>
                                 <Radio.Button value={"女"} style={{ width: '64px', textAlign: 'center' }}>女</Radio.Button>
                             </Radio.Group>
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="age" label="年龄">
+                        <Form.Item wrapperCol={{ span: 10 }} name="age" label="年龄" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="phone" label="联系电话">
+                        <Form.Item wrapperCol={{ span: 10 }} name="phone" label="联系电话" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="dno" label="部门号" >
+                        <Form.Item wrapperCol={{ span: 10 }} name="dno" label="部门号" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 10 }}>

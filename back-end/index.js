@@ -10,7 +10,8 @@ db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '123',
-    database: 'test'
+    database: 'test',
+    timezone: 'SYSTEM'
 })
 
 db.connect(function (err) {
@@ -40,11 +41,13 @@ app.use(express.urlencoded({ extended: true }))  // parse requests of content-ty
 const usersRouter = require('./routes/users');
 const employeeRouter = require('./routes/employee');
 const departmentRouter = require('./routes/department');
+const projectRouter = require('./routes/project');
 
 //use router
 app.use('/users', usersRouter); // 到/users的路由
 app.use('/employee', employeeRouter); // 到/employee的路由
 app.use('/department', departmentRouter); // 到/department的路由
+app.use('/project', projectRouter);
 
 // starting the server
 const PORT = 4040;

@@ -16,3 +16,12 @@ export interface DepartmentModel {
     bossno: number;
     ename: string;
 }
+
+export interface ProjectModel {
+    pno: number;
+    dsc: string;
+    stime: Date;
+    ftime: Date;
+    leaderno: number;
+    ename: string;
+}

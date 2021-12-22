@@ -1,16 +1,17 @@
 import React, { Component, useState, useEffect } from 'react'
 import { Table, Tag, Space, Button } from 'antd';
 import { title } from 'process';
-import { EmployeeModel, DepartmentModel } from '../utils/DataModel';
+import { EmployeeModel, ProjectModel } from '../utils/DataModel';
 import {
     Layout, Menu, Breadcrumb, Avatar, Card, Divider, Input,
     message, Pagination, Select, Skeleton, Typography, Upload, Tooltip,
-    Col, Row, Descriptions, Form, Radio, Drawer, Popconfirm
+    Col, Row, Descriptions, Form, Radio, Drawer, Popconfirm, DatePicker
 } from 'antd'
 import { staticApi } from '../utils/http-common';
 import { Basement, Container } from './BasicHTMLElement'
 import { Router } from 'react-router';
 import { waitFor } from '@testing-library/react';
+import moment from "moment";
 
 import {
     UserOutlined,
@@ -31,6 +32,7 @@ import {
     QuestionCircleOutlined,
     SearchOutlined,
 } from '@ant-design/icons';
+import { format } from 'util';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -38,8 +40,8 @@ const { Search } = Input;
 const { SubMenu } = Menu;
 const { Column, ColumnGroup } = Table;
 
-export const DepartmentTable = (props: {}) => {
-    const [data, setData] = useState<Array<DepartmentModel>>([]);
+export const ProjectTable = (props: {}) => {
+    const [data, setData] = useState<Array<ProjectModel>>([]);
     const [employee, setEmployee] = useState<Array<EmployeeModel>>([]);
     const [visible, setVisible] = useState(false);
     const [dataForm] = Form.useForm();
@@ -56,8 +58,8 @@ export const DepartmentTable = (props: {}) => {
     )
 
     const getData = async () => {
-        const res = await staticApi.get('/department', {})
-        // console.log("source:", res);
+        const res = await staticApi.get('/project', {})
+        console.log("source:", res);
         if (res.data.success) {
             setData(res.data.data);
         } else {
@@ -66,10 +68,10 @@ export const DepartmentTable = (props: {}) => {
     }
 
 
-    const getEmployee = async (record: DepartmentModel) => {
-        const res = await staticApi.get('/employee/department', {
+    const getEmployee = async (record: ProjectModel) => {
+        const res = await staticApi.get('/employee', {
             params: {
-                dno: record.dno
+                pno: record.pno
             }
         })
         // console.log("source:", res);
@@ -82,7 +84,7 @@ export const DepartmentTable = (props: {}) => {
 
     const deleteElement = async (text: any, record: any, index: any) => {
         // console.log(record.dno);
-        const res = await staticApi.delete('/department/delete', {
+        const res = await staticApi.delete('/project/delete', {
             params: {
                 dno: record.dno
             }
@@ -98,7 +100,7 @@ export const DepartmentTable = (props: {}) => {
 
     const onSearch = async (e: string) => {
         // console.log(e);
-        const res = await staticApi.get('/department/search', {
+        const res = await staticApi.get('/project/search', {
             params: {
                 searchitem: e
             }
@@ -111,15 +113,16 @@ export const DepartmentTable = (props: {}) => {
         }
     }
 
-    const handleSubmit = async (values: DepartmentModel) => {
+    const handleSubmit = async (values: ProjectModel) => {
         console.log(values);
         const checkReg = /\s+/;
-        if (values.dname !== undefined && values.dname.search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.dno !== undefined && values.dno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
-        else if (values.address !== undefined && values.address.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        /*
+        if (values.dname !== undefined && (values.dname === '' || values.dname.search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.dno !== undefined && (values.dno.toString() === '' || values.dno.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
+        else if (values.address !== undefined && (values.address.toString() === '' || values.address.toString().search(checkReg) !== -1)) message.error('请不要使用空白字符');
         else {
             if (opt == 0) {
-                const res = await staticApi.post('/department/new', {
+                const res = await staticApi.post('/project/new', {
                     params: {
                         dno: values.dno,
                         dname: values.dname,
@@ -137,7 +140,7 @@ export const DepartmentTable = (props: {}) => {
                     message.warning(res.data.message)
                 }
             } else {
-                const res = await staticApi.post('/department/update', {
+                const res = await staticApi.post('/project/update', {
                     params: {
                         dname: values.dname,
                         address: values.address,
@@ -155,7 +158,7 @@ export const DepartmentTable = (props: {}) => {
                     message.warning(res.data.message)
                 }
             }
-        }
+        }*/
     }
 
 
@@ -178,7 +181,7 @@ export const DepartmentTable = (props: {}) => {
                     <PlusOutlined></PlusOutlined>新增
                 </Button>
                 <Drawer
-                    title={opt === 1 ? `修改信息` : `添加部门`}
+                    title={opt === 1 ? `修改信息` : `添加项目`}
                     placement="right"
                     size='default'
                     visible={visible}
@@ -187,42 +190,46 @@ export const DepartmentTable = (props: {}) => {
                         if (opt === 1) dataForm.resetFields();
                     }}
                 >
-                    <Form labelCol={{ span: 8 }} onFinish={handleSubmit} form={dataForm}>
-                        <Form.Item wrapperCol={{ span: 10 }} name="dno" label="部门号" rules={[{ required: true, message: 'Please input Info' }]}>
+                    <Form labelCol={{ span: 6 }} onFinish={handleSubmit} form={dataForm}>
+                        <Form.Item wrapperCol={{ span: 10 }} name="pno" label="项目号" rules={[{ required: true, message: 'Please input Info' }]}>
                             <Input disabled={opt === 1} onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="dname" label="部门名称" rules={[{ required: true, message: 'Please input Info' }]}>
-                            <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        <Form.Item wrapperCol={{ span: 15 }} name="dsc" label="项目简介" rules={[{ required: true, message: 'Please input Intro' }]}>
+                            <Input.TextArea showCount maxLength={200} size={"large"} rows={5}/>
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="address" label="办公地点" rules={[{ required: true, message: 'Please input Info' }]}>
-                            <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        <Form.Item wrapperCol={{ span: 10 }} name="stime" label="起始时间" rules={[{ required: true, message: 'Please input Info' }]}>
+                            <DatePicker />
                         </Form.Item>
-                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="部门主管" hidden={opt === 0}>
-                            <Select placeholder="选择部门主管">
-                                <Select.Option value={''}>空缺</Select.Option>
+                        <Form.Item wrapperCol={{ span: 10 }} name="ftime" label="结束时间" rules={[{ required: true, message: 'Please input Info' }]}>
+                            <DatePicker />
+                        </Form.Item>
+                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="项目负责人" hidden={opt==0}>
+                            <Select placeholder="选择负责人">
                                 {employee.map((item) =>
                                     <Select.Option value={item.eno}>{item.eno}{"  "}{item.ename}</Select.Option>
                                 )}
                             </Select>
                         </Form.Item>
-                        <Form.Item wrapperCol={{ offset: 10 }}>
+                        <Form.Item wrapperCol={{ offset: 8 }}>
                             <Button type="default" htmlType="submit">提交</Button>
                         </Form.Item>
                     </Form>
                 </Drawer>
             </div>
             <Table dataSource={data} pagination={false} bordered={true}>
-                <Column title="部门号" dataIndex="dno" key="dno" />
-                <Column title="部门名称" dataIndex="dname" key="dname" />
-                <Column title="办公地点" dataIndex="address" key="address" />
-                <ColumnGroup title="部门主管" >
-                    <Column title="编号" dataIndex="bossno" key="bossno" />
+                <Column title="项目号" dataIndex="pno" key="pno" />
+                <Column title="项目简介" dataIndex="dsc" key="dsc" />
+                <Column title="起始时间" dataIndex="stime" key="stime" />
+                <Column title="结束时间" dataIndex="ftime" key="ftime" />
+                <ColumnGroup title="项目负责人" >
+                    <Column title="编号" dataIndex="leaderno" key="leaderno" />
                     <Column title="姓名" dataIndex="ename" key="ename" />
                 </ColumnGroup>
+                <Column title="参与员工列表" dataIndex="employeelist" key="employeelist" />
                 <Column
                     title="操作"
                     key="action"
-                    render={(text, record: DepartmentModel, index) => (
+                    render={(text, record: ProjectModel, index) => (
                         <Space>
                             <Button type="primary"
                                 onClick={() => { showDrawer(); dataForm.setFieldsValue(record); setOpt(1); getEmployee(record); }}

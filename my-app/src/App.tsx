@@ -11,6 +11,8 @@ import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { EmployeeTable } from './components/EmployeeTable';
 import { DepartmentTable } from './components/DepartmentTalbe';
+import { ProjectTable } from './components/ProjectTable';
+
 import { EmployeeModel } from './utils/DataModel';
 import { staticApi } from './utils/http-common';
 
@@ -105,6 +107,7 @@ function App() {
               <Route path="/" element={<img src="./images/home.jpg" width="100%"></img>}></Route>
               <Route path="/employee" element={<EmployeeTable></EmployeeTable>}></Route>
               <Route path="/department" element={<DepartmentTable></DepartmentTable>}></Route>
+              <Route path="/project" element={<ProjectTable></ProjectTable>}></Route>
             </Routes>
           </div>
         </Content>

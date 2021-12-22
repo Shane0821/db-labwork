@@ -1,10 +1,13 @@
+const { format } = require('mysql');
+
 const express = require('express'),
     router = express.Router();
 
 router.get('/', function (req, res) {
     let sql = `
-    SELECT department.dno, dname, address, bossno, ename 
-    FROM department LEFT JOIN employee ON department.bossno = employee.eno
+    SELECT pno, dsc, stime, ftime, leaderno, ename 
+    FROM project LEFT JOIN employee ON project.leaderno = employee.eno
+    order by pno asc
     `;
     db.query(sql, function (err, data, fields) {
         if (err) {
@@ -15,15 +18,15 @@ router.get('/', function (req, res) {
                 message: err.sqlMessage
             })
         } else {
+            console.log(data);
             res.json({
                 status: 200,
                 data,
                 success: true,
-                message: "department list retrieved successfully"
+                message: "project list retrieved successfully"
             })
-            //console.log(data);
+
         }
-        //console.log(data);
     })
 });
 
@@ -55,7 +58,7 @@ router.get('/search', function (req, res) {
                 success: true,
                 message: "department list retrieved successfully"
             })
-            //console.log(data);
+            console.log(data);
         }
 
     })

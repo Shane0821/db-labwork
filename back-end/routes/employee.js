@@ -23,7 +23,7 @@ router.get('/', function (req, res) {
                 success: true,
                 message: "employee list retrieved successfully"
             })
-            console.log(data);
+            //console.log(data);
         }
 
     })
@@ -58,7 +58,35 @@ router.get('/search', function (req, res) {
                 success: true,
                 message: "employee list retrieved successfully"
             })
-            console.log(data);
+            //console.log(data);
+        }
+
+    })
+});
+
+router.get('/department', function (req, res) {
+    let sql = `
+    SELECT eno, ename
+    from employee 
+    where dno = ${req.query.dno}
+    order by eno asc
+    `;
+    db.query(sql, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                data,
+                success: true,
+                message: "employee list retrieved successfully"
+            })
+            // console.log(data);
         }
 
     })
