@@ -36,7 +36,7 @@ router.get('/search', function (req, res) {
     let sql = `
     SELECT eno, ename, gender, age, phone, employee.dno, dname 
     FROM employee, department 
-    where (eno REGEXP '${flt}' 
+    where (employee.dno REGEXP '${flt}' 
         or ename REGEXP '${flt}' 
         or gender REGEXP '${flt}' 
         or dname REGEXP '${flt}') 

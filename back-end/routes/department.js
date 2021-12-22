@@ -54,11 +54,12 @@ router.get('/search', function (req, res) {
 
 
 router.post('/new', function (req, res) {
-    let sql = `insert into department values(?,?,?,NULL)`;
+    let sql = `insert into department values(?,?,?,?)`;
     let values = [
         req.body.params.dno,
         req.body.params.dname,
-        req.body.params.address,
+        req.body.params.bossno === '' ? null : req.body.params.bossno,
+        req.body.params.bossno
     ]
     db.query(sql, values, function (err, data, fields) {
         if (err) {
@@ -82,11 +83,12 @@ router.post('/new', function (req, res) {
 router.post('/update', function (req, res) {
     let sql = `
     UPDATE department 
-    SET dname=?, address=? WHERE dno=?
+    SET dname=?, address=?, bossno=? WHERE dno=?
     `;
     let values = [
         req.body.params.dname,
         req.body.params.address,
+        req.body.params.bossno === '' ? null : req.body.params.bossno,
         req.body.params.dno,
     ]
     // console.log(values);

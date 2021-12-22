@@ -106,7 +106,8 @@ export const DepartmentTable = (props: {}) => {
                     params: {
                         dno: values.dno,
                         dname: values.dname,
-                        address: values.address
+                        address: values.address,
+                        bossno: values.bossno
                     }
                 });
                 // console.log(res);
@@ -123,7 +124,8 @@ export const DepartmentTable = (props: {}) => {
                     params: {
                         dname: values.dname,
                         address: values.address,
-                        dno: values.dno
+                        dno: values.dno,
+                        bossno: values.bossno
                     }
                 });
                 console.log(res);
@@ -178,6 +180,9 @@ export const DepartmentTable = (props: {}) => {
                         <Form.Item wrapperCol={{ span: 10 }} name="address" label="办公地点">
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
+                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="部门主管编号">
+                            <Input placeholder={'可不填'} onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        </Form.Item>
                         <Form.Item wrapperCol={{ offset: 10 }}>
                             <Button type="default" htmlType="submit">提交</Button>
                         </Form.Item>
@@ -188,8 +193,8 @@ export const DepartmentTable = (props: {}) => {
                 <Column title="部门号" dataIndex="dno" key="dno" />
                 <Column title="部门名称" dataIndex="dname" key="dname" />
                 <Column title="办公地点" dataIndex="address" key="address" />
-                <ColumnGroup title="部门经理" render={()=>(<></>)}>
-                    <Column title="编号" dataIndex="boosno" key="bossno" />
+                <ColumnGroup title="部门主管" >
+                    <Column title="编号" dataIndex="bossno" key="bossno"/>
                     <Column title="姓名" dataIndex="ename" key="ename" />
                 </ColumnGroup>
                 <Column
