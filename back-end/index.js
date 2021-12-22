@@ -41,11 +41,13 @@ app.use(express.urlencoded({ extended: true }))  // parse requests of content-ty
 const employeeRouter = require('./routes/employee');
 const departmentRouter = require('./routes/department');
 const projectRouter = require('./routes/project');
+const pro_empRouter = require('./routes/pro_emp');
 
 //use router
 app.use('/employee', employeeRouter); // 到/employee的路由
 app.use('/department', departmentRouter); // 到/department的路由
 app.use('/project', projectRouter);
+app.use('/pro_emp', pro_empRouter);
 
 // starting the server
 const PORT = 4040;

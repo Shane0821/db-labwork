@@ -94,13 +94,13 @@ router.get('/department', function (req, res) {
 
 router.get('/project', function (req, res) {
     let sql = `
-    SELECT eno, ename
-    from employee
-    where eno in (
+    SELECT eno, ename, employee.dno, dname, phone
+    from employee, department
+    where employee.dno=department.dno 
+    and eno in (
         select eno 
         from pro_emp
-        where pno = ${req.query.pno}
-    )
+        where pno = ${req.query.pno})
     order by eno asc
     `;
     db.query(sql, function (err, data, fields) {
@@ -118,7 +118,7 @@ router.get('/project', function (req, res) {
                 success: true,
                 message: "employee list retrieved successfully"
             })
-            // console.log(data);
+            console.log(data);
         }
 
     })

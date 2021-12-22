@@ -5,7 +5,7 @@ import { EmployeeModel, ProjectModel } from '../utils/DataModel';
 import {
     Layout, Menu, Breadcrumb, Avatar, Card, Divider, Input,
     message, Pagination, Select, Skeleton, Typography, Upload, Tooltip,
-    Col, Row, Descriptions, Form, Radio, Drawer, Popconfirm, DatePicker
+    Col, Row, Descriptions, Form, Radio, Drawer, Popconfirm, DatePicker, Modal
 } from 'antd'
 import { staticApi } from '../utils/http-common';
 import { Basement, Container } from './BasicHTMLElement'
@@ -33,6 +33,7 @@ import {
     SearchOutlined,
 } from '@ant-design/icons';
 import { format } from 'util';
+import { EmployeeTable } from './EmployeeTable';
 
 const { Text, Title, Paragraph } = Typography;
 
@@ -44,7 +45,9 @@ export const ProjectTable = (props: {}) => {
     const [data, setData] = useState<Array<ProjectModel>>([]);
     const [employee, setEmployee] = useState<Array<EmployeeModel>>([]);
     const [visible, setVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);
     const [dataForm] = Form.useForm();
+    const [recordForm] = Form.useForm();
     const [opt, setOpt] = useState(0);
 
     const showDrawer = () => {
@@ -160,6 +163,26 @@ export const ProjectTable = (props: {}) => {
         }
     }
 
+    const handleRecordSubmit = async (values: any, record: any) => {
+        const checkReg = /\s+/;
+        if (values.eno !== undefined && values.eno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
+        else {
+            const res = await staticApi.post('/pro_emp/new', {
+                params: {
+                    eno: values.eno,
+                    pno: record.pno
+                }
+            });
+            // console.log(res);
+            if (res.data.success) {
+                message.success('添加成功')
+                recordForm.resetFields();
+                getEmployee(record);
+            } else {
+                message.warning(res.data.message)
+            }
+        }
+    }
 
     return (
         <>
@@ -203,7 +226,7 @@ export const ProjectTable = (props: {}) => {
                             <DatePicker />
                         </Form.Item>
 
-                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="项目负责人" hidden={opt === 0}>
+                        <Form.Item wrapperCol={{ span: 10 }} name="leaderno" label="项目负责人" hidden={opt === 0}>
                             <Select placeholder="选择负责人">
                                 <Select.Option value={''}>空缺</Select.Option>
                                 {employee.map((item) =>
@@ -222,9 +245,7 @@ export const ProjectTable = (props: {}) => {
                 <Column title="项目号" dataIndex="pno" key="pno" />
                 <Column title="项目简介" dataIndex="dsc" key="dsc" ellipsis={{ showTitle: false }}
                     render={dsc => (
-                        <Tooltip placement="topLeft" title={dsc}>
-                            {dsc}
-                        </Tooltip>
+                        <Tooltip placement="topLeft" title={dsc}>{dsc}</Tooltip>
                     )}
                 />
                 <Column title="起始时间" dataIndex="stime" key="stime" />
@@ -236,7 +257,41 @@ export const ProjectTable = (props: {}) => {
                 <Column title="参与员工列表" key="employeelist"
                     render={(text, record: ProjectModel, index) => (
                         <>
-                            <Button type="link">查看</Button>
+                            <Button type="link"
+                                onClick={() => { setModalVisible(true); getEmployee(record) }}>
+                                查看
+                            </Button>
+                            <Modal
+                                title="参与员工列表"
+                                centered
+                                visible={modalVisible}
+                                footer={null}
+                                onCancel={() => setModalVisible(false)}
+                                width={1000}
+                            >
+                                <div className="site-layout-background" style={{ paddingBottom: 24, display: 'flex' }}>
+                                    <Form onFinish={(e) => handleRecordSubmit(e, record)} form={recordForm} layout="inline">
+                                        <Form.Item name="eno" label="员工编号" rules={[{ required: true, message: 'Please input Info' }]}>
+                                            <Input placeholder={"输入员工编号"} onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                                        </Form.Item>
+                                        <Form.Item >
+                                            <Button type="primary" size="middle"
+                                                style={{ display: 'flex', alignItems: 'center' }}
+                                                htmlType="submit"
+                                            >
+                                                <PlusOutlined></PlusOutlined>添加
+                                            </Button>
+                                        </Form.Item>
+                                    </Form>
+                                </div>
+                                <Table dataSource={employee} pagination={false} bordered={true}>
+                                    <Column title="编号" dataIndex="eno" key="eno" />
+                                    <Column title="姓名" dataIndex="ename" key="ename" />
+                                    <Column title="部门号" dataIndex="dno" key="dno" />
+                                    <Column title="部门名称" dataIndex="dname" key="dname" />
+                                    <Column title="联系电话" dataIndex="phone" key="phone" />
+                                </Table>
+                            </Modal>
                         </>
                     )}
                 />
@@ -253,10 +308,10 @@ export const ProjectTable = (props: {}) => {
                                     Reflect.set(record, 'stime', moment.utc(record.stime, "YYYY-MM-DD"));
                                     Reflect.set(record, 'ftime', moment.utc(record.ftime, "YYYY-MM-DD"));
                                     setOpt(1);
+                                    getEmployee(record);
                                     dataForm.setFieldsValue(record);
                                     Reflect.set(record, 'stime', tmp1);
                                     Reflect.set(record, 'ftime', tmp2);
-                                    /* getEmployee(record); */
                                 }}
                             >
                                 修改

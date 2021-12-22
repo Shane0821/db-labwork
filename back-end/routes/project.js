@@ -97,13 +97,13 @@ router.post('/new', function (req, res) {
 router.post('/update', function (req, res) {
     let sql = `
     UPDATE project
-    SET dsc =?, stime =?, ftime =?, leaderno=? WHERE pno =?
+    SET dsc =?, stime =?, ftime =?, leaderno=? WHERE pno=?
     `;
     let values = [
         req.body.params.dsc,
         req.body.params.stime,
         req.body.params.ftime,
-        req.body.params.ftime.leaderno,
+        req.body.params.leaderno,
         req.body.params.pno,
     ]
     // console.log(values);

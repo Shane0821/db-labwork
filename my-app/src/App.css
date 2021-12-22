@@ -60,6 +60,7 @@
 .site-layout-background {
   background: #fff;
 }
-  [data-theme="dark"] .site-layout-sub-header-background {
-    background: #141414;
-  }
+
+[data-theme="dark"] .site-layout-sub-header-background {
+  background: #141414;
+}

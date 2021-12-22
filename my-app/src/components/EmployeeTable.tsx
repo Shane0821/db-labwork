@@ -206,7 +206,7 @@ export const EmployeeTable = (props: {}) => {
                 </Drawer>
             </div>
             <Table dataSource={data} pagination={false} bordered={true}>
-                <Column title="编号" dataIndex="eno" key="eno" />
+                <Column title="编号" dataIndex="eno" key="eno"/>
                 <Column title="姓名" dataIndex="ename" key="ename" />
                 <Column title="性别" dataIndex="gender" key="gender" />
                 <Column title="年龄" dataIndex="age" key="age" />
