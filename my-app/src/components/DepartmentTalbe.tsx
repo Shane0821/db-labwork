@@ -206,7 +206,7 @@ export const DepartmentTable = (props: {}) => {
                             </Select>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 10 }}>
-                            <Button type="default" htmlType="submit">提交</Button>
+                            <Button type="primary" htmlType="submit">提交</Button>
                         </Form.Item>
                     </Form>
                 </Drawer>

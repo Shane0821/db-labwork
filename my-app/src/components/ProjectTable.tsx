@@ -99,13 +99,13 @@ export const ProjectTable = (props: {}) => {
     }
 
     const onSearch = async (e: string) => {
-        // console.log(e);
+        console.log(e);
         const res = await staticApi.get('/project/search', {
             params: {
                 searchitem: e
             }
         })
-        // console.log("source:", res);
+        console.log("source:", res);
         if (res.data.success) {
             setData(res.data.data);
         } else {
@@ -211,7 +211,7 @@ export const ProjectTable = (props: {}) => {
                             </Select>
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 8 }}>
-                            <Button type="default" htmlType="submit">提交</Button>
+                            <Button type="primary" htmlType="submit">提交</Button>
                         </Form.Item>
                     </Form>
                 </Drawer>

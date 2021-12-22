@@ -18,7 +18,6 @@ router.get('/', function (req, res) {
                 message: err.sqlMessage
             })
         } else {
-            console.log(data);
             res.json({
                 status: 200,
                 data,
@@ -34,15 +33,18 @@ router.get('/search', function (req, res) {
     var flt = "^";
     flt = flt.concat(req.query.searchitem);
     // console.log(flt);
-    let sql = `
-    SELECT department.dno, dname, address, bossno, ename 
-    FROM department LEFT JOIN employee ON department.bossno = employee.eno
-    where (department.dno REGEXP '${flt}' 
-        or dname REGEXP '${flt}' 
-        or address REGEXP '${flt}' 
-        or ename REGEXP '${flt}') 
-    order by dno asc
-    `;
+    var flt2 = "+";
+    flt2 = req.query.searchitem + flt2;
+    // console.log(flt2);
+    var sql = `
+    SELECT pno, dsc, stime, ftime, leaderno, ename
+    FROM project LEFT JOIN employee ON project.leaderno = employee.eno
+    where(pno REGEXP '${flt}' 
+        or stime REGEXP '${flt2}'
+        or ftime REGEXP '${flt2}'
+        or ename REGEXP '${flt}')
+    order by pno asc
+        `;
     db.query(sql, function (err, data, fields) {
         if (err) {
             console.log(err);
@@ -56,9 +58,9 @@ router.get('/search', function (req, res) {
                 status: 200,
                 data,
                 success: true,
-                message: "department list retrieved successfully"
+                message: "project list retrieved successfully"
             })
-            console.log(data);
+            //console.log(data);
         }
 
     })
@@ -94,9 +96,9 @@ router.post('/new', function (req, res) {
 
 router.post('/update', function (req, res) {
     let sql = `
-    UPDATE department 
-    SET dname=?, address=?, bossno=? WHERE dno=?
-    `;
+    UPDATE department
+    SET dname =?, address =?, bossno =? WHERE dno =?
+        `;
     let values = [
         req.body.params.dname,
         req.body.params.address,
@@ -125,7 +127,7 @@ router.post('/update', function (req, res) {
 
 router.delete('/delete', function (req, res) {
     console.log(req.query);
-    let sql = `delete from department where dno='${req.query.dno}'`;
+    let sql = `delete from department where dno = '${req.query.dno}'`;
     db.query(sql, function (err, data, fields) {
         if (err) {
             console.log(err);

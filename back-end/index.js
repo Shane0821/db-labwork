@@ -38,13 +38,11 @@ app.use(express.json())  // parse requests of content-type - application/json
 app.use(express.urlencoded({ extended: true }))  // parse requests of content-type - application/x-www-form-urlencoded
 
 //routers
-const usersRouter = require('./routes/users');
 const employeeRouter = require('./routes/employee');
 const departmentRouter = require('./routes/department');
 const projectRouter = require('./routes/project');
 
 //use router
-app.use('/users', usersRouter); // 到/users的路由
 app.use('/employee', employeeRouter); // 到/employee的路由
 app.use('/department', departmentRouter); // 到/department的路由
 app.use('/project', projectRouter);

@@ -200,7 +200,7 @@ export const EmployeeTable = (props: {}) => {
                             <Input onPressEnter={(e) => { e.preventDefault() }} allowClear />
                         </Form.Item>
                         <Form.Item wrapperCol={{ offset: 10 }}>
-                            <Button type="default" htmlType="submit">提交</Button>
+                            <Button type="primary" htmlType="submit">提交</Button>
                         </Form.Item>
                     </Form>
                 </Drawer>
