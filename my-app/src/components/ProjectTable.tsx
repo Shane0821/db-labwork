@@ -143,7 +143,8 @@ export const ProjectTable = (props: {}) => {
                         dsc: values.dsc,
                         stime: values.stime,
                         ftime: values.ftime,
-                        pno: values.pno
+                        pno: values.pno,
+                        leaderno: values.leaderno
                     }
                 });
                 console.log(res);
@@ -201,6 +202,16 @@ export const ProjectTable = (props: {}) => {
                         <Form.Item wrapperCol={{ span: 10 }} name="ftime" label="结束时间" rules={[{ required: true, message: 'Please input Info' }]}>
                             <DatePicker />
                         </Form.Item>
+
+                        <Form.Item wrapperCol={{ span: 10 }} name="bossno" label="项目负责人" hidden={opt === 0}>
+                            <Select placeholder="选择负责人">
+                                <Select.Option value={''}>空缺</Select.Option>
+                                {employee.map((item) =>
+                                    <Select.Option value={item.eno}>{item.eno}{"  "}{item.ename}</Select.Option>
+                                )}
+                            </Select>
+                        </Form.Item>
+
                         <Form.Item wrapperCol={{ offset: 8 }}>
                             <Button type="primary" htmlType="submit">提交</Button>
                         </Form.Item>
@@ -222,7 +233,13 @@ export const ProjectTable = (props: {}) => {
                     <Column title="编号" dataIndex="leaderno" key="leaderno" />
                     <Column title="姓名" dataIndex="ename" key="ename" />
                 </ColumnGroup>
-                <Column title="参与员工列表" dataIndex="employeelist" key="employeelist" />
+                <Column title="参与员工列表" key="employeelist"
+                    render={(text, record: ProjectModel, index) => (
+                        <>
+                            <Button type="link">查看</Button>
+                        </>
+                    )}
+                />
                 <Column
                     title="操作"
                     key="action"

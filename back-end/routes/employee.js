@@ -92,6 +92,37 @@ router.get('/department', function (req, res) {
     })
 });
 
+router.get('/project', function (req, res) {
+    let sql = `
+    SELECT eno, ename
+    from employee
+    where eno in (
+        select eno 
+        from pro_emp
+        where pno = ${req.query.pno}
+    )
+    order by eno asc
+    `;
+    db.query(sql, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                data,
+                success: true,
+                message: "employee list retrieved successfully"
+            })
+            // console.log(data);
+        }
+
+    })
+});
 
 router.post('/new', function (req, res) {
     let sql = `insert into employee values (?)`;

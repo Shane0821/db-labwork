@@ -6,7 +6,7 @@ const createTable = () => {
         if (err) throw err;
         //console.log("Employee Table created");
     });
-    var sql = "CREATE TABLE if not exists department (dno INT PRIMARY KEY, dname VARCHAR(50) NOT NULL, address VARCHAR(50) NOT NULL, bossno INT DEFAULT NULL, FOREIGN KEY(bossno) REFERENCES employee(eno))";
+    var sql = "CREATE TABLE if not exists department (dno INT PRIMARY KEY, dname VARCHAR(50) NOT NULL, address VARCHAR(50) NOT NULL, bossno INT DEFAULT NULL, FOREIGN KEY(bossno) REFERENCES employee(eno) ON DELETE SET NULL)";
     db.query(sql, function (err, result) {
         if (err) throw err;
         //console.log("Department Table created");
