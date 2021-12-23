@@ -73,6 +73,21 @@ const createTable = () => {
     db.query(sql, function (err, result) {
         // if (err) console.log(err);
     });
+    var sql = `
+    create trigger pro_emp_delete
+    after delete on pro_emp
+    for each row
+    begin 
+        if (exists (select * from project where leaderno = OLD.eno)) then
+            update project
+            set leaderno = NULL
+            where leaderno = OLD.eno;
+        end if;
+    end
+    `;
+    db.query(sql, function (err, result) {
+        if (err) console.log(err);
+    });
 }
 
 exports.createTable = createTable;

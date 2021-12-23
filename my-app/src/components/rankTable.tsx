@@ -41,7 +41,7 @@ const { Search } = Input;
 const { SubMenu } = Menu;
 const { Column, ColumnGroup } = Table;
 
-export const ProjectTable = (props: {}) => {
+export const RankTable = (props: {}) => {
     const [data, setData] = useState<Array<ProjectModel>>([]);
 
     useEffect(
@@ -51,8 +51,7 @@ export const ProjectTable = (props: {}) => {
     )
 
     const getData = async () => {
-        return;
-        const res = await staticApi.get('/project', {})
+        const res = await staticApi.get('/pro_emp/rank', {})
         console.log("source:", res);
         if (res.data.success) {
             setData(res.data.data);
@@ -64,9 +63,10 @@ export const ProjectTable = (props: {}) => {
     return (
         <>
             <Table dataSource={data} pagination={false} bordered={true}>
-                <Column title="项目号" dataIndex="pno" key="pno" />
-                <Column title="起始时间" dataIndex="stime" key="stime" />
-                <Column title="结束时间" dataIndex="ftime" key="ftime" />
+                <Column title="排名" dataIndex="rank" key="rank" />
+                <Column title="员工编号" dataIndex="eno" key="eno" />
+                <Column title="员工姓名" dataIndex="ename" key="ename" />
+                <Column title="参与项目数" dataIndex="cnt" key="cnt" />
             </Table>
         </>)
 }

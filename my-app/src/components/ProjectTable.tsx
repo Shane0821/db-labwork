@@ -97,6 +97,7 @@ export const ProjectTable = (props: {}) => {
         if (res.data.success) {
             message.success('删除成功');
             getEmployee(pno);
+            getData();
         } else {
             message.error(res.data.message)
         }

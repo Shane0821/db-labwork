@@ -12,6 +12,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { EmployeeTable } from './components/EmployeeTable';
 import { DepartmentTable } from './components/DepartmentTalbe';
 import { ProjectTable } from './components/ProjectTable';
+import { RankTable } from './components/RankTable';
 
 import { EmployeeModel } from './utils/DataModel';
 import { staticApi } from './utils/http-common';
@@ -49,7 +50,7 @@ function App() {
       return '1';
     } else if (pathname == '/project') {
       return '3';
-    } else if (pathname == '/statistics') {
+    } else if (pathname == '/rank') {
       return '4';
     }
     return '5';
@@ -96,7 +97,7 @@ function App() {
             </Menu.Item>
             <Menu.Item key="4" icon={<BarChartOutlined />}>
               统计
-              <Link to={"/statistics"} />
+              <Link to={"/rank"} />
             </Menu.Item>
           </SubMenu>
         </Menu>
@@ -110,6 +111,7 @@ function App() {
               <Route path="/employee" element={<EmployeeTable></EmployeeTable>}></Route>
               <Route path="/department" element={<DepartmentTable></DepartmentTable>}></Route>
               <Route path="/project" element={<ProjectTable></ProjectTable>}></Route>
+              <Route path="/rank" element={<RankTable></RankTable>}></Route>
             </Routes>
           </div>
         </Content>
