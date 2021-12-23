@@ -27,4 +27,29 @@ router.post('/new', function (req, res) {
     })
 });
 
+router.delete('/delete', function (req, res) {
+    let sql = `
+    delete from pro_emp 
+    where pno = '${req.query.pno}'
+    and eno = '${req.query.eno}'
+    `;
+    console.log(req.query);
+    db.query(sql, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                success: true,
+                message: "record deleted successfully"
+            })
+        }
+    })
+});
+
 module.exports = router;

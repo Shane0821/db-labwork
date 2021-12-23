@@ -103,7 +103,7 @@ router.post('/update', function (req, res) {
         req.body.params.dsc,
         req.body.params.stime,
         req.body.params.ftime,
-        req.body.params.leaderno,
+        req.body.params.leaderno === '' ? null : req.body.params.leaderno,
         req.body.params.pno,
     ]
     // console.log(values);

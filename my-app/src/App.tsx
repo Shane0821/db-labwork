@@ -35,6 +35,7 @@ import {
 } from '@ant-design/icons';
 
 const { Header, Content, Sider, Footer } = Layout;
+const { SubMenu } = Menu;
 
 function App() {
   const [selectedMenu, setSelectedMenu] = useState(() => {
@@ -48,7 +49,7 @@ function App() {
       return '1';
     } else if (pathname == '/project') {
       return '3';
-    } else if (pathname == '/board') {
+    } else if (pathname == '/statistics') {
       return '4';
     }
     return '5';
@@ -57,10 +58,10 @@ function App() {
   const onSelectMenu = (e: any) => {
     setSelectedMenu(e.key);
   }
- 
+
   useEffect(
     () => {
-      
+
     }, []
   )
 
@@ -88,21 +89,22 @@ function App() {
             员工管理
             <Link to={"/employee"} />
           </Menu.Item>
-          <Menu.Item key="3" icon={<CloudOutlined />}>
-            项目管理
-            <Link to={"/project"} />
-          </Menu.Item>
-          <Menu.Item key="4" icon={<BarChartOutlined />}>
-            员工榜
-            <Link to={"/board"} />
-          </Menu.Item>
+          <SubMenu key="sub1" icon={<SettingOutlined />} title="项目管理">
+            <Menu.Item key="3" icon={<CloudOutlined />}>
+              项目列表
+              <Link to={"/project"} />
+            </Menu.Item>
+            <Menu.Item key="4" icon={<BarChartOutlined />}>
+              统计
+              <Link to={"/statistics"} />
+            </Menu.Item>
+          </SubMenu>
         </Menu>
       </Sider>
       <Layout className="site-layout" style={{ marginLeft: 200 }}>
         <Header className="site-layout-background" style={{ padding: 0 }} />
         <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div className="site-layout-background" style={{ padding: 24, textAlign: 'center', minHeight: '80vh' }}>
-
             <Routes>
               <Route path="/" element={<img src="./images/home.jpg" width="100%"></img>}></Route>
               <Route path="/employee" element={<EmployeeTable></EmployeeTable>}></Route>

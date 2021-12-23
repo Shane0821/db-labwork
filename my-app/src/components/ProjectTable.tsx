@@ -49,6 +49,7 @@ export const ProjectTable = (props: {}) => {
     const [dataForm] = Form.useForm();
     const [recordForm] = Form.useForm();
     const [opt, setOpt] = useState(0);
+    const [title, setTitle] = useState("");
 
     const showDrawer = () => {
         setVisible(true);
@@ -71,15 +72,31 @@ export const ProjectTable = (props: {}) => {
     }
 
 
-    const getEmployee = async (record: ProjectModel) => {
+    const getEmployee = async (pno: number) => {
         const res = await staticApi.get('/employee/project', {
             params: {
-                pno: record.pno
+                pno: pno
             }
         })
         // console.log("source:", res);
         if (res.data.success) {
             setEmployee(res.data.data);
+        } else {
+            message.error(res.data.message)
+        }
+    }
+
+    const removeRecord = async (eno: number, pno: any) => {
+        const res = await staticApi.delete('/pro_emp/delete', {
+            params: {
+                pno: pno,
+                eno: eno
+            }
+        })
+        // console.log("source:", res);
+        if (res.data.success) {
+            message.success('删除成功');
+            getEmployee(pno);
         } else {
             message.error(res.data.message)
         }
@@ -163,21 +180,21 @@ export const ProjectTable = (props: {}) => {
         }
     }
 
-    const handleRecordSubmit = async (values: any, record: any) => {
+    const handleRecordSubmit = async (values: any, pno: any) => {
         const checkReg = /\s+/;
         if (values.eno !== undefined && values.eno.toString().search(checkReg) !== -1) message.error('请不要使用空白字符');
         else {
             const res = await staticApi.post('/pro_emp/new', {
                 params: {
                     eno: values.eno,
-                    pno: record.pno
+                    pno: pno
                 }
             });
             // console.log(res);
             if (res.data.success) {
                 message.success('添加成功')
                 recordForm.resetFields();
-                getEmployee(record);
+                getEmployee(pno);
             } else {
                 message.warning(res.data.message)
             }
@@ -258,11 +275,11 @@ export const ProjectTable = (props: {}) => {
                     render={(text, record: ProjectModel, index) => (
                         <>
                             <Button type="link"
-                                onClick={() => { setModalVisible(true); getEmployee(record) }}>
+                                onClick={() => { setModalVisible(true); getEmployee(record.pno); setTitle(record.pno.toString()); }}>
                                 查看
                             </Button>
                             <Modal
-                                title="参与员工列表"
+                                title={"项目 " + title + " 参与员工列表"}
                                 centered
                                 visible={modalVisible}
                                 footer={null}
@@ -270,7 +287,7 @@ export const ProjectTable = (props: {}) => {
                                 width={1000}
                             >
                                 <div className="site-layout-background" style={{ paddingBottom: 24, display: 'flex' }}>
-                                    <Form onFinish={(e) => handleRecordSubmit(e, record)} form={recordForm} layout="inline">
+                                    <Form onFinish={(e) => handleRecordSubmit(e, title)} form={recordForm} layout="inline">
                                         <Form.Item name="eno" label="员工编号" rules={[{ required: true, message: 'Please input Info' }]}>
                                             <Input placeholder={"输入员工编号"} onPressEnter={(e) => { e.preventDefault() }} allowClear />
                                         </Form.Item>
@@ -290,6 +307,19 @@ export const ProjectTable = (props: {}) => {
                                     <Column title="部门号" dataIndex="dno" key="dno" />
                                     <Column title="部门名称" dataIndex="dname" key="dname" />
                                     <Column title="联系电话" dataIndex="phone" key="phone" />
+                                    <Column title="操作" key="action"
+                                        render={(text, erc: EmployeeModel, index) => (
+                                            <Popconfirm onConfirm={() => { removeRecord(erc.eno, title) }}
+                                                title="Are you sure?"
+                                                icon={<QuestionCircleOutlined
+                                                    style={{ color: 'red' }} />}
+                                                okText={<a>确定</a>}
+                                                cancelText={<a>取消</a>}
+                                            >
+                                                <Button>删除</Button>
+                                            </Popconfirm>
+                                        )}
+                                    />
                                 </Table>
                             </Modal>
                         </>
@@ -308,7 +338,7 @@ export const ProjectTable = (props: {}) => {
                                     Reflect.set(record, 'stime', moment.utc(record.stime, "YYYY-MM-DD"));
                                     Reflect.set(record, 'ftime', moment.utc(record.ftime, "YYYY-MM-DD"));
                                     setOpt(1);
-                                    getEmployee(record);
+                                    getEmployee(record.pno);
                                     dataForm.setFieldsValue(record);
                                     Reflect.set(record, 'stime', tmp1);
                                     Reflect.set(record, 'ftime', tmp2);

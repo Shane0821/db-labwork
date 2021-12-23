@@ -118,7 +118,7 @@ router.get('/project', function (req, res) {
                 success: true,
                 message: "employee list retrieved successfully"
             })
-            console.log(data);
+            //console.log(data);
         }
 
     })

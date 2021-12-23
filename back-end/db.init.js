@@ -69,6 +69,10 @@ const createTable = () => {
     db.query(sql, function (err, result) {
         // if (err) console.log(err);
     });
+    var sql = "insert into project values(3005,'面向气象要素的机器学习方法的比较分析与评测','2021-05-01','2023-05-01',NULL)"
+    db.query(sql, function (err, result) {
+        // if (err) console.log(err);
+    });
 }
 
 exports.createTable = createTable;
