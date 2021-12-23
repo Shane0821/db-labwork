@@ -278,6 +278,60 @@ export const ProjectTable = (props: {}) => {
                     </Form>
                 </Drawer>
             </div>
+            <Modal
+                title={"项目 " + title + " 参与员工列表"}
+                centered
+                visible={modalVisible}
+                footer={null}
+                onCancel={() => setModalVisible(false)}
+                width={1000}
+            >
+                <div className="site-layout-background" style={{ paddingBottom: 24, display: 'flex' }}>
+                    <Form onFinish={(e) => handleRecordSubmit(e, title)} form={recordForm} layout="inline">
+                        <Form.Item name="eno" label="员工编号" rules={[{ required: true, message: 'Please input Info' }]}>
+                            <Input placeholder={"输入员工编号"} onPressEnter={(e) => { e.preventDefault() }} allowClear />
+                        </Form.Item>
+                        <Form.Item >
+                            <Button type="primary" size="middle"
+                                style={{ display: 'flex', alignItems: 'center' }}
+                                htmlType="submit"
+                            >
+                                <PlusOutlined></PlusOutlined>添加
+                            </Button>
+                        </Form.Item>
+                    </Form>
+                </div>
+                <Table dataSource={employee} pagination={false} bordered={true}>
+                    <Column title="编号" dataIndex="eno" key="eno" />
+                    <Column title="姓名" dataIndex="ename" key="ename" />
+                    <Column title="部门号" dataIndex="dno" key="dno" />
+                    <Column title="部门名称" dataIndex="dname" key="dname" />
+                    <Column title="联系电话" dataIndex="phone" key="phone" />
+                    <Column title="操作" key="action"
+                        render={(text, erc: EmployeeModel, index) => (
+                            <Space>
+                                <Button type="primary"
+                                    hidden={erc.eno === leader}
+                                    onClick={() => {
+                                        updateLeader(erc.eno, title);
+                                    }}
+                                >
+                                    设为负责人
+                                </Button>
+                                <Popconfirm onConfirm={() => { removeRecord(erc.eno, title) }}
+                                    title="Are you sure?"
+                                    icon={<QuestionCircleOutlined
+                                        style={{ color: 'red' }} />}
+                                    okText={<a>确定</a>}
+                                    cancelText={<a>取消</a>}
+                                >
+                                    <Button>删除</Button>
+                                </Popconfirm>
+                            </Space>
+                        )}
+                    />
+                </Table>
+            </Modal>
             <Table dataSource={data} pagination={false} bordered={true}>
                 <Column title="项目号" dataIndex="pno" key="pno" />
                 <Column title="项目简介" dataIndex="dsc" key="dsc" ellipsis={{ showTitle: false }}
@@ -303,60 +357,6 @@ export const ProjectTable = (props: {}) => {
                                 }}>
                                 查看
                             </Button>
-                            <Modal
-                                title={"项目 " + title + " 参与员工列表"}
-                                centered
-                                visible={modalVisible}
-                                footer={null}
-                                onCancel={() => setModalVisible(false)}
-                                width={1000}
-                            >
-                                <div className="site-layout-background" style={{ paddingBottom: 24, display: 'flex' }}>
-                                    <Form onFinish={(e) => handleRecordSubmit(e, title)} form={recordForm} layout="inline">
-                                        <Form.Item name="eno" label="员工编号" rules={[{ required: true, message: 'Please input Info' }]}>
-                                            <Input placeholder={"输入员工编号"} onPressEnter={(e) => { e.preventDefault() }} allowClear />
-                                        </Form.Item>
-                                        <Form.Item >
-                                            <Button type="primary" size="middle"
-                                                style={{ display: 'flex', alignItems: 'center' }}
-                                                htmlType="submit"
-                                            >
-                                                <PlusOutlined></PlusOutlined>添加
-                                            </Button>
-                                        </Form.Item>
-                                    </Form>
-                                </div>
-                                <Table dataSource={employee} pagination={false} bordered={true}>
-                                    <Column title="编号" dataIndex="eno" key="eno" />
-                                    <Column title="姓名" dataIndex="ename" key="ename" />
-                                    <Column title="部门号" dataIndex="dno" key="dno" />
-                                    <Column title="部门名称" dataIndex="dname" key="dname" />
-                                    <Column title="联系电话" dataIndex="phone" key="phone" />
-                                    <Column title="操作" key="action"
-                                        render={(text, erc: EmployeeModel, index) => (
-                                            <Space>
-                                                <Button type="primary"
-                                                    hidden={erc.eno === leader}
-                                                    onClick={() => {
-                                                        updateLeader(erc.eno, title);
-                                                    }}
-                                                >
-                                                    设为负责人
-                                                </Button>
-                                                <Popconfirm onConfirm={() => { removeRecord(erc.eno, title) }}
-                                                    title="Are you sure?"
-                                                    icon={<QuestionCircleOutlined
-                                                        style={{ color: 'red' }} />}
-                                                    okText={<a>确定</a>}
-                                                    cancelText={<a>取消</a>}
-                                                >
-                                                    <Button>删除</Button>
-                                                </Popconfirm>
-                                            </Space>
-                                        )}
-                                    />
-                                </Table>
-                            </Modal>
                         </>
                     )}
                 />

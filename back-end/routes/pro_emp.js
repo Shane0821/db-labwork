@@ -33,7 +33,7 @@ router.delete('/delete', function (req, res) {
     where pno = '${req.query.pno}'
     and eno = '${req.query.eno}'
     `;
-    console.log(req.query);
+    // console.log(req.query);
     db.query(sql, function (err, data, fields) {
         if (err) {
             console.log(err);

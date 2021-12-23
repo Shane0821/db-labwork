@@ -29,6 +29,37 @@ router.get('/', function (req, res) {
     })
 });
 
+router.get('/employee', function (req, res) {
+    let sql = `
+    SELECT pno, dsc, stime, ftime
+    FROM project 
+    where pno in (
+        select pno 
+        from pro_emp
+        where eno = ${req.query.eno}
+    )
+    order by pno asc
+    `;
+    db.query(sql, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                data,
+                success: true,
+                message: "project list retrieved successfully"
+            })
+
+        }
+    })
+});
+
 router.get('/search', function (req, res) {
     var flt = "^";
     flt = flt.concat(req.query.searchitem);

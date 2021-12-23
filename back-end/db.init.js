@@ -89,6 +89,22 @@ const createTable = () => {
     db.query(sql, function (err, result) {
         //if (err) console.log(err);
     });
+    var sql = `
+    create trigger employee_department_change
+    after update on employee
+    for each row
+    begin 
+        if (OLD.dno != NEW.dno 
+            and exists (select * from department where bossno = OLD.eno)) then
+            update department
+            set bossno = NULL
+            where bossno = OLD.eno;
+        end if;
+    end
+    `;
+    db.query(sql, function (err, result) {
+        //if (err) console.log(err);
+    });
 }
 
 exports.createTable = createTable;

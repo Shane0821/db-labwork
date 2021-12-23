@@ -42,7 +42,9 @@ const { SubMenu } = Menu;
 const { Column, ColumnGroup } = Table;
 
 export const RankTable = (props: {}) => {
-    const [data, setData] = useState<Array<ProjectModel>>([]);
+    const [data, setData] = useState([]);
+    const [visible, setVisible] = useState(false);
+    const [project, setProject] = useState<Array<ProjectModel>>([]);
 
     useEffect(
         () => {
@@ -52,9 +54,23 @@ export const RankTable = (props: {}) => {
 
     const getData = async () => {
         const res = await staticApi.get('/pro_emp/rank', {})
-        console.log("source:", res);
+        //console.log("source:", res);
         if (res.data.success) {
             setData(res.data.data);
+        } else {
+            message.error(res.data.message)
+        }
+    }
+
+    const getProject = async (eno: number) => {
+        const res = await staticApi.get('/project/employee', {
+            params: {
+                eno: eno
+            }
+        })
+        //console.log("source:", res);
+        if (res.data.success) {
+            setProject(res.data.data);
         } else {
             message.error(res.data.message)
         }
@@ -67,6 +83,38 @@ export const RankTable = (props: {}) => {
                 <Column title="员工编号" dataIndex="eno" key="eno" />
                 <Column title="员工姓名" dataIndex="ename" key="ename" />
                 <Column title="参与项目数" dataIndex="cnt" key="cnt" />
+                <Column title="详情" key="employeelist"
+                    render={(text, record: EmployeeModel, index) => (
+                        <>
+                            <Button type="link"
+                                onClick={() => {
+                                    setVisible(true);
+                                    getProject(record.eno);
+                                }}>
+                                查看
+                            </Button>
+                        </>)}
+                />
             </Table>
+            <Drawer
+                title={`Ta参与的项目`}
+                placement="right"
+                size='large'
+                visible={visible}
+                onClose={() => {
+                    setVisible(false);
+                }}
+            >
+                <Table dataSource={project} pagination={false} bordered={true}>
+                    <Column title="项目号" dataIndex="pno" key="pno" />
+                    <Column title="项目简介" dataIndex="dsc" key="dsc" ellipsis={{ showTitle: false }}
+                        render={dsc => (
+                            <Tooltip placement="topLeft" title={dsc}>{dsc}</Tooltip>
+                        )}
+                    />
+                    <Column title="起始时间" dataIndex="stime" key="stime" />
+                    <Column title="结束时间" dataIndex="ftime" key="ftime" />
+                </Table>
+            </Drawer>
         </>)
 }
