@@ -50,6 +50,7 @@ export const ProjectTable = (props: {}) => {
     const [recordForm] = Form.useForm();
     const [opt, setOpt] = useState(0);
     const [title, setTitle] = useState("");
+    const [leader, setLeader] = useState(-1);
 
     const showDrawer = () => {
         setVisible(true);
@@ -81,6 +82,23 @@ export const ProjectTable = (props: {}) => {
         // console.log("source:", res);
         if (res.data.success) {
             setEmployee(res.data.data);
+        } else {
+            message.error(res.data.message)
+        }
+    }
+
+    const updateLeader = async (eno: number, pno: any) => {
+        const res = await staticApi.post('/project/update/leader', {
+            params: {
+                pno: pno,
+                eno: eno
+            }
+        })
+        // console.log("source:", res);
+        if (res.data.success) {
+            message.success('设置成功');
+            getData();
+            setLeader(eno);
         } else {
             message.error(res.data.message)
         }
@@ -243,8 +261,8 @@ export const ProjectTable = (props: {}) => {
                         <Form.Item wrapperCol={{ span: 10 }} name="ftime" label="结束时间" rules={[{ required: true, message: 'Please input Info' }]}>
                             <DatePicker />
                         </Form.Item>
-
-                        <Form.Item wrapperCol={{ span: 10 }} name="leaderno" label="项目负责人" hidden={opt === 0}>
+                        {/*
+                         <Form.Item wrapperCol={{ span: 10 }} name="leaderno" label="项目负责人" hidden={opt === 0}>
                             <Select placeholder="选择负责人">
                                 <Select.Option value={''}>空缺</Select.Option>
                                 {employee.map((item) =>
@@ -252,6 +270,7 @@ export const ProjectTable = (props: {}) => {
                                 )}
                             </Select>
                         </Form.Item>
+                        */}
 
                         <Form.Item wrapperCol={{ offset: 8 }}>
                             <Button type="primary" htmlType="submit">提交</Button>
@@ -273,10 +292,15 @@ export const ProjectTable = (props: {}) => {
                     <Column title="姓名" dataIndex="ename" key="ename" />
                 </ColumnGroup>
                 <Column title="参与员工列表" key="employeelist"
-                    render={(text, record: ProjectModel, index) => (
+                    render={(text, prc: ProjectModel, index) => (
                         <>
                             <Button type="link"
-                                onClick={() => { setModalVisible(true); getEmployee(record.pno); setTitle(record.pno.toString()); }}>
+                                onClick={() => {
+                                    setModalVisible(true);
+                                    getEmployee(prc.pno);
+                                    setTitle(prc.pno.toString());
+                                    setLeader(prc.leaderno);
+                                }}>
                                 查看
                             </Button>
                             <Modal
@@ -310,15 +334,25 @@ export const ProjectTable = (props: {}) => {
                                     <Column title="联系电话" dataIndex="phone" key="phone" />
                                     <Column title="操作" key="action"
                                         render={(text, erc: EmployeeModel, index) => (
-                                            <Popconfirm onConfirm={() => { removeRecord(erc.eno, title) }}
-                                                title="Are you sure?"
-                                                icon={<QuestionCircleOutlined
-                                                    style={{ color: 'red' }} />}
-                                                okText={<a>确定</a>}
-                                                cancelText={<a>取消</a>}
-                                            >
-                                                <Button>删除</Button>
-                                            </Popconfirm>
+                                            <Space>
+                                                <Button type="primary"
+                                                    hidden={erc.eno === leader}
+                                                    onClick={() => {
+                                                        updateLeader(erc.eno, title);
+                                                    }}
+                                                >
+                                                    设为负责人
+                                                </Button>
+                                                <Popconfirm onConfirm={() => { removeRecord(erc.eno, title) }}
+                                                    title="Are you sure?"
+                                                    icon={<QuestionCircleOutlined
+                                                        style={{ color: 'red' }} />}
+                                                    okText={<a>确定</a>}
+                                                    cancelText={<a>取消</a>}
+                                                >
+                                                    <Button>删除</Button>
+                                                </Popconfirm>
+                                            </Space>
                                         )}
                                     />
                                 </Table>

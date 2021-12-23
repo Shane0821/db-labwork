@@ -97,16 +97,43 @@ router.post('/new', function (req, res) {
 router.post('/update', function (req, res) {
     let sql = `
     UPDATE project
-    SET dsc =?, stime =?, ftime =?, leaderno=? WHERE pno=?
+    SET dsc =?, stime =?, ftime =? WHERE pno=?
     `;
     let values = [
         req.body.params.dsc,
         req.body.params.stime,
         req.body.params.ftime,
-        req.body.params.leaderno === '' ? null : req.body.params.leaderno,
         req.body.params.pno,
     ]
     // console.log(values);
+    db.query(sql, values, function (err, data, fields) {
+        if (err) {
+            console.log(err);
+            res.json({
+                status: 400,
+                success: false,
+                message: err.sqlMessage
+            })
+        } else {
+            res.json({
+                status: 200,
+                success: true,
+                message: "project info updated successfully"
+            })
+        }
+    })
+});
+
+router.post('/update/leader', function (req, res) {
+    let sql = `
+    UPDATE project
+    SET leaderno=? WHERE pno=?
+    `;
+    let values = [
+        req.body.params.eno,
+        req.body.params.pno,
+    ]
+    //console.log(values);
     db.query(sql, values, function (err, data, fields) {
         if (err) {
             console.log(err);

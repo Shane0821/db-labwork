@@ -81,12 +81,13 @@ const createTable = () => {
         if (exists (select * from project where leaderno = OLD.eno)) then
             update project
             set leaderno = NULL
-            where leaderno = OLD.eno;
+            where pno = OLD.pno
+            and leaderno = OLD.eno;
         end if;
     end
     `;
     db.query(sql, function (err, result) {
-        if (err) console.log(err);
+        //if (err) console.log(err);
     });
 }
 
